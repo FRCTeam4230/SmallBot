@@ -9,6 +9,7 @@ import com.ctre.phoenix.motorcontrol.WPI_AutoFeedEnable;
 import com.ctre.phoenix.motorcontrol.can.*;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
+import frc.robot.Constants.CANId;
 
 public class Drivetrain extends SubsystemBase {
   /** Creates a new Drivetrain. */
@@ -19,10 +20,10 @@ public class Drivetrain extends SubsystemBase {
   private DifferentialDrive drivesys;
   
   public Drivetrain() {
-    bLeft = new WPI_TalonSRX(kLeftMotorBackPort);
-    fLeft = new WPI_VictorSPX(kLeftMotorFrontPort);
-    fRight = new WPI_TalonSRX(kRightMotorFrontPort);
-    bRight = new WPI_VictorSPX(kRightMotorBackPort);
+    bLeft = new WPI_TalonSRX(CANId.kLeftMotorBackPort);
+    fLeft = new WPI_VictorSPX(CANId.kLeftMotorFrontPort);
+    fRight = new WPI_TalonSRX(CANId.kRightMotorFrontPort);
+    bRight = new WPI_VictorSPX(CANId.kRightMotorBackPort);
 
     lGroup = new SpeedControllerGroup(fLeft, bLeft);
     rGroup = new SpeedControllerGroup(fRight, bRight);
