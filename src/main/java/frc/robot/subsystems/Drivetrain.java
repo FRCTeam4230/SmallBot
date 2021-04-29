@@ -17,19 +17,28 @@ public class Drivetrain extends SubsystemBase {
   private WPI_TalonSRX bLeft, fRight;
   private WPI_VictorSPX fLeft, bRight;
   private SpeedControllerGroup lGroup, rGroup;
-  private DifferentialDrive drivesys;
+  private DifferentialDrive driveSys;
   
   public Drivetrain() {
     bLeft = new WPI_TalonSRX(CANId.kLeftMotorBackPort);
+    bLeft.setInverted(true);
     fLeft = new WPI_VictorSPX(CANId.kLeftMotorFrontPort);
+    fLeft.setInverted(true);
     fRight = new WPI_TalonSRX(CANId.kRightMotorFrontPort);
+    fRight.setInverted(true);
     bRight = new WPI_VictorSPX(CANId.kRightMotorBackPort);
+    bRight.setInverted(true);
 
     lGroup = new SpeedControllerGroup(fLeft, bLeft);
     rGroup = new SpeedControllerGroup(fRight, bRight);
 
-    drivesys = new DifferentialDrive(lGroup, rGroup);
+    driveSys = new DifferentialDrive(lGroup, rGroup);
   }
+
+  public void arcadeDrive(double fwd, double rot) {
+    driveSys.arcadeDrive(fwd, rot);
+  }
+
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
