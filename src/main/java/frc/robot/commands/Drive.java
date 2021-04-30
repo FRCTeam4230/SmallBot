@@ -25,13 +25,13 @@ public class Drive extends CommandBase {
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {
-    m_subsystem.arcadeDrive(0.3, 0);
-  }
+  public void initialize() {}
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {}
+  public void execute() {
+    m_subsystem.arcadeDrive(0.3, 0);
+  }
 
   // Called once the command ends or is interrupted.
   @Override

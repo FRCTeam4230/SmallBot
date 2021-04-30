@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.commands.MyTeleOpDriveCommand;
+import frc.robot.commands.Drive;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -25,6 +26,7 @@ public class RobotContainer {
   //private final ExampleCommand m_autoCommand = new ExampleCommand(m_exampleSubsystem);
 
   private final MyTeleOpDriveCommand m_driveCommand = new MyTeleOpDriveCommand(m_drivetrain, driver1);
+  private final Drive m_autoCommand = new Drive(m_drivetrain);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -47,6 +49,6 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    return null;
+    return m_autoCommand;
   }
 }
