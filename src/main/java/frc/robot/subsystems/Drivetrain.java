@@ -24,6 +24,7 @@ public class Drivetrain extends SubsystemBase {
     bLeft.setInverted(true);
     fLeft = new WPI_VictorSPX(CANId.kLeftMotorFrontPort);
     fLeft.setInverted(true);
+    
     fRight = new WPI_TalonSRX(CANId.kRightMotorFrontPort);
     fRight.setInverted(true);
     bRight = new WPI_VictorSPX(CANId.kRightMotorBackPort);
