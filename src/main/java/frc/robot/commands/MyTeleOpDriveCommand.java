@@ -15,7 +15,6 @@ public class MyTeleOpDriveCommand extends CommandBase {
   Drivetrain locDriveTrain;
   XboxController locDriverJoyStick;
 
-
   public MyTeleOpDriveCommand(Drivetrain driveTrain, XboxController driverJoystick) {
     locDriveTrain = driveTrain;
     locDriverJoyStick = driverJoystick;
@@ -31,8 +30,21 @@ public class MyTeleOpDriveCommand extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    locDriveTrain.arcadeDrive(locDriverJoyStick.getY(GenericHID.Hand.kLeft)*Constants.driveTrain.speedMult,
-                        locDriverJoyStick.getX(GenericHID.Hand.kRight)*Constants.driveTrain.rotMult);
+    if (Constants.driveTrain.useArcadeControls) {
+      // arcade driving
+      double y = locDriverJoyStick.getY(GenericHID.Hand.kLeft);
+      double x = locDriverJoyStick.getX(GenericHID.Hand.kRight);
+      locDriveTrain.arcadeDrive(
+          Math.pow(y, 2) * Math.signum(y) * Constants.driveTrain.speedMult,
+          Math.pow(x, 2) * Math.signum(x) * Constants.driveTrain.rotMult);
+    } else {
+      // tank driving
+      double left = locDriverJoyStick.getX(GenericHID.Hand.kLeft);
+      double right = locDriverJoyStick.getX(GenericHID.Hand.kRight);
+      locDriveTrain.tankDrive(
+          Math.pow(left, 2) * Math.signum(left) * Constants.driveTrain.speedMult,
+          Math.pow(right, 2) * Math.signum(right) * Constants.driveTrain.speedMult);
+    }
   }
 
   // Called once the command ends or is interrupted.

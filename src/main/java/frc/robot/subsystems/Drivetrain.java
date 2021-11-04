@@ -36,6 +36,10 @@ public class Drivetrain extends SubsystemBase {
     driveSys = new DifferentialDrive(lGroup, rGroup);
   }
 
+  public void tankDrive(double lSpeed, double rSpeed) {
+    driveSys.tankDrive(lSpeed, rSpeed);
+  }
+
   public void arcadeDrive(double fwd, double rot) {
     driveSys.arcadeDrive(fwd, rot);
   }

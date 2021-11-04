@@ -22,5 +22,6 @@ public final class Constants {
     public static final class driveTrain {
         public static final double speedMult = 0.64;
         public static final double rotMult = 0.45;
+        public static final boolean useArcadeControls = true;
     }
 }
