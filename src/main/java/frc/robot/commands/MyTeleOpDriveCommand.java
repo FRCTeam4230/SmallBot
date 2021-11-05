@@ -5,7 +5,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.Constants;
+import frc.robot.Constants.driveTrain;
 import frc.robot.subsystems.Drivetrain;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
@@ -25,25 +25,45 @@ public class MyTeleOpDriveCommand extends CommandBase {
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+  }
+
+  private boolean tankMode = driveTrain.useArcadeControls;
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (Constants.driveTrain.useArcadeControls) {
+    if (locDriverJoyStick.getAButtonPressed()) {
+      tankMode = !tankMode;
+    }
+
+    double speedMult = driveTrain.defaultSpeedMult;
+    double rotMult = driveTrain.defaultRotMult;
+
+    switch ((locDriverJoyStick.getBumper(GenericHID.Hand.kLeft) ? 1 : 0)
+        - (locDriverJoyStick.getBumper(GenericHID.Hand.kRight) ? 1 : 0)) {
+    case -1:
+      speedMult = driveTrain.slowSpeedMult;
+      rotMult = driveTrain.slowRotMult;
+      break;
+    case 1:
+      speedMult = driveTrain.fastSpeedMult;
+      rotMult = driveTrain.fastRotMult;
+      break;
+    }
+
+    if (tankMode) {
       // arcade driving
-      double y = locDriverJoyStick.getY(GenericHID.Hand.kLeft);
-      double x = locDriverJoyStick.getX(GenericHID.Hand.kRight);
-      locDriveTrain.arcadeDrive(
-          Math.pow(y, 2) * Math.signum(y) * Constants.driveTrain.speedMult,
-          Math.pow(x, 2) * Math.signum(x) * Constants.driveTrain.rotMult);
+      double forwardAmount = locDriverJoyStick.getY(GenericHID.Hand.kLeft);
+      double turnAmount = locDriverJoyStick.getX(GenericHID.Hand.kRight);
+      locDriveTrain.arcadeDrive(Math.pow(forwardAmount, 2) * Math.signum(forwardAmount) * speedMult,
+          Math.pow(turnAmount, 2) * Math.signum(turnAmount) * rotMult);
     } else {
       // tank driving
-      double left = locDriverJoyStick.getX(GenericHID.Hand.kLeft);
-      double right = locDriverJoyStick.getX(GenericHID.Hand.kRight);
-      locDriveTrain.tankDrive(
-          Math.pow(left, 2) * Math.signum(left) * Constants.driveTrain.speedMult,
-          Math.pow(right, 2) * Math.signum(right) * Constants.driveTrain.speedMult);
+      double left = locDriverJoyStick.getY(GenericHID.Hand.kLeft);
+      double right = locDriverJoyStick.getY(GenericHID.Hand.kRight);
+      locDriveTrain.tankDrive(Math.pow(left, 2) * Math.signum(left) * speedMult,
+          Math.pow(right, 2) * Math.signum(right) * speedMult);
     }
   }
 
