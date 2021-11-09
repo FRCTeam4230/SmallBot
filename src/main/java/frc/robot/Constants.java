@@ -23,11 +23,9 @@ public final class Constants {
     public static final class driveTrain {
         public static final double defaultSpeedMult = 0.64;
         public static final double fastSpeedMult = 1.00;
-        public static final double slowSpeedMult = 0.30;
 
         public static final double defaultRotMult = 0.50;
         public static final double fastRotMult = 1.00;
-        public static final double slowRotMult = 0.30;
 
         public static final boolean useArcadeControls = true;
     }

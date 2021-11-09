@@ -4,11 +4,11 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants.driveTrain;
 import frc.robot.subsystems.Drivetrain;
-import edu.wpi.first.wpilibj.GenericHID;
-import edu.wpi.first.wpilibj.XboxController;
 
 public class MyTeleOpDriveCommand extends CommandBase {
   /** Creates a new MyTeleOpDriveCommand. */
@@ -37,20 +37,14 @@ public class MyTeleOpDriveCommand extends CommandBase {
       tankMode = !tankMode;
     }
 
-    double speedMult = driveTrain.defaultSpeedMult;
-    double rotMult = driveTrain.defaultRotMult;
+    double speedMult = locDriverJoyStick.getStickButton(GenericHID.Hand.kLeft) ? driveTrain.fastSpeedMult
+        : driveTrain.defaultSpeedMult;
+    double rotMult = locDriverJoyStick.getStickButton(GenericHID.Hand.kLeft) ? driveTrain.fastRotMult
+        : driveTrain.defaultSpeedMult;
 
-    switch ((locDriverJoyStick.getBumper(GenericHID.Hand.kLeft) ? 1 : 0)
-        - (locDriverJoyStick.getBumper(GenericHID.Hand.kRight) ? 1 : 0)) {
-    case -1:
-      speedMult = driveTrain.slowSpeedMult;
-      rotMult = driveTrain.slowRotMult;
-      break;
-    case 1:
-      speedMult = driveTrain.fastSpeedMult;
-      rotMult = driveTrain.fastRotMult;
-      break;
-    }
+    locDriverJoyStick.setRumble(GenericHID.RumbleType.kLeftRumble,
+        (locDriverJoyStick.getStickButton(GenericHID.Hand.kLeft) ? 0.5 : 0)
+            + (locDriverJoyStick.getStickButton(GenericHID.Hand.kRight) ? 0.5 : 0));
 
     if (tankMode) {
       // arcade driving
@@ -62,8 +56,8 @@ public class MyTeleOpDriveCommand extends CommandBase {
       // tank driving
       double left = locDriverJoyStick.getY(GenericHID.Hand.kLeft);
       double right = locDriverJoyStick.getY(GenericHID.Hand.kRight);
-      locDriveTrain.tankDrive(Math.pow(left, 2) * Math.signum(left) * speedMult,
-          Math.pow(right, 2) * Math.signum(right) * speedMult);
+      locDriveTrain.tankDrive(Math.pow(right, 2) * Math.signum(right) * rotMult,
+          Math.pow(left, 2) * Math.signum(left) * speedMult);
     }
   }
 
