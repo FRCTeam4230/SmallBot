@@ -39,7 +39,7 @@ public class MyTeleOpDriveCommand extends CommandBase {
 
     double speedMult = locDriverJoyStick.getStickButton(GenericHID.Hand.kLeft) ? driveTrain.fastSpeedMult
         : driveTrain.defaultSpeedMult;
-    double rotMult = locDriverJoyStick.getStickButton(GenericHID.Hand.kLeft) ? driveTrain.fastRotMult
+    double rotMult = locDriverJoyStick.getStickButton(GenericHID.Hand.kRight) ? driveTrain.fastRotMult
         : driveTrain.defaultSpeedMult;
 
     locDriverJoyStick.setRumble(GenericHID.RumbleType.kLeftRumble,
