@@ -4,13 +4,31 @@
 
 package frc.robot.commands;
 
-import frc.robot.subsystems.Drivetrain;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.networktables.NetworkTableInstance;
+// import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.subsystems.Drivetrain;
 
 /** An example command that uses an example subsystem. */
 public class Drive extends CommandBase {
   @SuppressWarnings({ "PMD.UnusedPrivateField", "PMD.SingularField" })
   private final Drivetrain m_subsystem;
+  // private Timer timer;
+  private NetworkTable limeTable;
+  private NetworkTableEntry tx;
+  private NetworkTableEntry ty;
+  private NetworkTableEntry ta;
+
+  private static final int MAXHORIZDEGREES = 27;
+  private static final double MAXVERTDEGREES = 20.5;
+  private static final double TURNSPEED = 0.5;
+  private static final double TURNBASE = 0.3;
+  private static final double MOVESPEED = 0.5;
+  private static final double MOVEBASE = 0.2;
+  // private static final double MOVESPEED = 0;
+  // private static final double MOVEBASE = 0;
 
   /**
    * Creates a new Drive.
@@ -26,12 +44,30 @@ public class Drive extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    limeTable = NetworkTableInstance.getDefault().getTable("limelight");
+    tx = limeTable.getEntry("tx");
+    ty = limeTable.getEntry("ty");
+    ta = limeTable.getEntry("ta");
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_subsystem.arcadeDrive(0.4, 0);
+    // if (timer.get() < 1)
+    //   m_subsystem.arcadeDrive(0.5, 0);
+    // else if (timer.get() < 2)
+    //   m_subsystem.tankDrive(0, 0.5);
+    // else if (timer.get() < 3)
+    //   m_subsystem.tankDrive(0.5, 0);
+    // m_subsystem.arcadeDrive(0, Math.signum(limeTable.getEntry("tx").getDouble(0)));
+
+    //read values
+    double x = tx.getDouble(0.0);
+    double y = ty.getDouble(0.0);
+    double area = ta.getDouble(0.0);
+
+    m_subsystem.arcadeDrive(-y / MAXVERTDEGREES * MOVESPEED - Math.signum(y) * MOVEBASE,
+        x / MAXHORIZDEGREES * TURNSPEED + Math.signum(x) * TURNBASE);
   }
 
   // Called once the command ends or is interrupted.
@@ -44,5 +80,6 @@ public class Drive extends CommandBase {
   @Override
   public boolean isFinished() {
     return false;
+    // return timer.get() > 3;
   }
 }
