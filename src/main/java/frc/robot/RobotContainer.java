@@ -19,13 +19,11 @@ import frc.robot.commands.Drive;
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
-  private final XboxController driver1 = new XboxController(0);
-
   private final Drivetrain m_drivetrain = new Drivetrain();
 
   //private final ExampleCommand m_autoCommand = new ExampleCommand(m_exampleSubsystem);
 
-  private final MyTeleOpDriveCommand m_driveCommand = new MyTeleOpDriveCommand(m_drivetrain, driver1);
+  private final MyTeleOpDriveCommand m_driveCommand = new MyTeleOpDriveCommand(m_drivetrain);
   private final Drive m_autoCommand = new Drive(m_drivetrain);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
@@ -41,7 +39,8 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then passing it to a {@link
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
-  private void configureButtonBindings() {}
+  private void configureButtonBindings() {
+  }
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.

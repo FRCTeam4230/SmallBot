@@ -20,13 +20,20 @@ public final class Constants {
         public static final int kRightMotorBackPort = 4;
     }
 
-    public static final class driveTrain {
-        public static final double defaultSpeedMult = 0.64;
-        public static final double fastSpeedMult = 1.00;
-
-        public static final double defaultRotMult = 0.50;
-        public static final double fastRotMult = 1.00;
-
+    public static class driving {
         public static final boolean useArcadeControls = true;
+        public static final int power = 2;
+
+        public static class speeds {
+            public static class normal {
+                public static final double move = 0.64;
+                public static final double turn = 0.5;
+            }
+
+            public static class fast {
+                public static final double move = 0.64;
+                public static final double turn = 0.5;
+            }
+        }
     }
 }

@@ -4,23 +4,20 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj.GenericHID;
-import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.Constants.driveTrain;
+import frc.robot.Controls;
+import frc.robot.Constants.driving;
 import frc.robot.subsystems.Drivetrain;
 
 public class MyTeleOpDriveCommand extends CommandBase {
   /** Creates a new MyTeleOpDriveCommand. */
   Drivetrain locDriveTrain;
-  XboxController locDriverJoyStick;
+  Controls controls = Controls.getInstance();
 
-  public MyTeleOpDriveCommand(Drivetrain driveTrain, XboxController driverJoystick) {
+  public MyTeleOpDriveCommand(Drivetrain driveTrain) {
     locDriveTrain = driveTrain;
-    locDriverJoyStick = driverJoystick;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(driveTrain);
-    // Use addRequirements() here to declare subsystem dependencies.
   }
 
   // Called when the command is initially scheduled.
@@ -28,36 +25,23 @@ public class MyTeleOpDriveCommand extends CommandBase {
   public void initialize() {
   }
 
-  private boolean tankMode = driveTrain.useArcadeControls;
+  private boolean tankMode = !driving.useArcadeControls;
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (locDriverJoyStick.getAButtonPressed()) {
+    if (controls.controller.getAButtonPressed()) {
       tankMode = !tankMode;
     }
 
-    double speedMult = locDriverJoyStick.getStickButton(GenericHID.Hand.kLeft) ? driveTrain.fastSpeedMult
-        : driveTrain.defaultSpeedMult;
-    double rotMult = locDriverJoyStick.getStickButton(GenericHID.Hand.kRight) ? driveTrain.fastRotMult
-        : driveTrain.defaultSpeedMult;
+    controls.adjustRumble();
 
-    locDriverJoyStick.setRumble(GenericHID.RumbleType.kLeftRumble,
-        (locDriverJoyStick.getStickButton(GenericHID.Hand.kLeft) ? 0.5 : 0)
-            + (locDriverJoyStick.getStickButton(GenericHID.Hand.kRight) ? 0.5 : 0));
-
-    if (tankMode) {
+    if (!tankMode) {
       // arcade driving
-      double forwardAmount = locDriverJoyStick.getY(GenericHID.Hand.kLeft);
-      double turnAmount = locDriverJoyStick.getX(GenericHID.Hand.kRight);
-      locDriveTrain.arcadeDrive(Math.pow(forwardAmount, 2) * Math.signum(forwardAmount) * speedMult,
-          Math.pow(turnAmount, 2) * Math.signum(turnAmount) * rotMult);
+      locDriveTrain.arcadeDrive(controls.arcade.getMove(), controls.arcade.getTurn());
     } else {
       // tank driving
-      double left = locDriverJoyStick.getY(GenericHID.Hand.kLeft);
-      double right = locDriverJoyStick.getY(GenericHID.Hand.kRight);
-      locDriveTrain.tankDrive(Math.pow(right, 2) * Math.signum(right) * rotMult,
-          Math.pow(left, 2) * Math.signum(left) * speedMult);
+      locDriveTrain.tankDrive(controls.tank.getLeft(), controls.tank.getRight());
     }
   }
 
