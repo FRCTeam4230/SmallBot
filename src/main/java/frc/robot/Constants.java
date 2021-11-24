@@ -23,15 +23,16 @@ public final class Constants {
     public static class driving {
         public static final boolean useArcadeControls = true;
         public static final int power = 2;
+        public static final int direction = -1; // set to 1 or -1
 
         public static class speeds {
             public static class normal {
-                public static final double move = 0.64;
+                public static final double move = 0.64 * direction;
                 public static final double turn = 0.5;
             }
 
             public static class fast {
-                public static final double move = 0.64;
+                public static final double move = 0.64 * direction;
                 public static final double turn = 0.5;
             }
         }
