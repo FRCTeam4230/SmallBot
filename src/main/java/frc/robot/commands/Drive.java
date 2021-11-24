@@ -20,6 +20,7 @@ public class Drive extends CommandBase {
   private NetworkTableEntry tx;
   private NetworkTableEntry ty;
   private NetworkTableEntry ta;
+  private NetworkTableEntry led;
 
   private static final int MAXHORIZDEGREES = 27;
   private static final double MAXVERTDEGREES = 20.5;
@@ -48,6 +49,8 @@ public class Drive extends CommandBase {
     tx = limeTable.getEntry("tx");
     ty = limeTable.getEntry("ty");
     ta = limeTable.getEntry("ta");
+    led = limeTable.getEntry("ledMode");
+    led.setNumber(0);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -66,6 +69,13 @@ public class Drive extends CommandBase {
     double y = ty.getDouble(0.0);
     double area = ta.getDouble(0.0);
 
+    double limeHeight = 10;
+    double limeAngle = 33;
+    double targetHeight = 43;
+
+    System.out.println((targetHeight - limeHeight) / Math.tan(Math.toRadians(limeAngle + y)));
+    // System.out.println("Y: " + y);
+
     m_subsystem.arcadeDrive(-y / MAXVERTDEGREES * MOVESPEED - Math.signum(y) * MOVEBASE,
         x / MAXHORIZDEGREES * TURNSPEED + Math.signum(x) * TURNBASE);
   }
@@ -74,6 +84,7 @@ public class Drive extends CommandBase {
   @Override
   public void end(boolean interrupted) {
     m_subsystem.stop();
+    led.setNumber(1);
   }
 
   // Returns true when the command should end.
