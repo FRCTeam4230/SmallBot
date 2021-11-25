@@ -9,7 +9,7 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.Limelight;
-import frc.robot.Limelight.Pipeline;
+import frc.robot.Constants.driving;
 
 /** An example command that uses an example subsystem. */
 public class Drive extends CommandBase {
@@ -29,11 +29,15 @@ public class Drive extends CommandBase {
   private NetworkTableEntry aimDistance = NetworkTableInstance.getDefault().getTable("SmartDashboard").getSubTable("DB")
       .getEntry("Slider 0");
 
-  private static final int MAXHORIZDEGREES = 27;
-  private static final double TURNSPEED = 0.5;
-  private static final double TURNBASE = 0.3;
-  private static final double MOVESPEED = 1.0;
-  private static final double MOVEBASE = 0.2;
+  private static final int maxHorizDegrees = 27;
+  private static final double turnBase = 0.2;
+  private static final double turnSpeed = 0.9 - turnBase;
+  private static final double moveScale = 25;
+  private static final double moveBase = 0.3;
+  private static final double moveSpeed = 1.0 - moveBase;
+
+  private static final double distanceRange = 4;
+  private static final double turnRange = 2;
 
   /**
    * Creates a new Drive.
@@ -67,11 +71,18 @@ public class Drive extends CommandBase {
     log.setString("" + distanceOffset);
     log2.setString("" + currentDistance);
 
-    double speed = -Math.signum(distanceOffset) * (1 - 1 / (1 + Math.abs(distanceOffset) / 13));
+    double speed = 1 - 1 / (1 + Math.abs(distanceOffset) / moveScale);
     log3.setString("" + speed);
 
-    m_subsystem.arcadeDrive(speed * MOVESPEED,
-        Math.abs(x) < 3 ? 0 : x / MAXHORIZDEGREES * TURNSPEED + Math.signum(x) * TURNBASE);
+    if (!lime.hasTarget()) {
+      m_subsystem.stop();
+      return;
+    }
+
+    m_subsystem.arcadeDrive(
+        Math.abs(distanceOffset) < distanceRange ? 0
+            : (speed * moveSpeed + moveBase) * Math.signum(distanceOffset) * driving.direction,
+        Math.abs(x) < turnRange ? 0 : x / maxHorizDegrees * turnSpeed + Math.signum(x) * turnBase);
   }
 
   // Called once the command ends or is interrupted.
