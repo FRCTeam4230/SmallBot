@@ -24,20 +24,24 @@ public class Drive extends CommandBase {
       .getEntry("String 1");
   private NetworkTableEntry log3 = NetworkTableInstance.getDefault().getTable("SmartDashboard").getSubTable("DB")
       .getEntry("String 2");
-  // private NetworkTableEntry log4 = NetworkTableInstance.getDefault().getTable("SmartDashboard").getSubTable("DB").getEntry("String 3");
+  // private NetworkTableEntry log4 =
+  // NetworkTableInstance.getDefault().getTable("SmartDashboard").getSubTable("DB").getEntry("String
+  // 3");
 
   private NetworkTableEntry aimDistance = NetworkTableInstance.getDefault().getTable("SmartDashboard").getSubTable("DB")
       .getEntry("Slider 0");
 
   private static final int maxHorizDegrees = 27;
-  private static final double turnBase = 0.2;
-  private static final double turnSpeed = 0.9 - turnBase;
-  private static final double moveScale = 25;
-  private static final double moveBase = 0.3;
+  private static final double turnBase = 0.4;
+  private static final double turnSpeed = 1.0 - turnBase;
+  private static final double moveScale = 30;
+  private static final double moveBase = 0.2;
   private static final double moveSpeed = 1.0 - moveBase;
 
   private static final double distanceRange = 4;
-  private static final double turnRange = 2;
+  private static final double turnRange = 1;
+
+  private Drivetrain.Encoders.Target target;
 
   /**
    * Creates a new Drive.
@@ -54,6 +58,7 @@ public class Drive extends CommandBase {
   @Override
   public void initialize() {
     lime.leds.auto();
+    target = m_subsystem.encoders.new Target(-5, 5);
 
     aimDistance.setDouble(60);
   }
@@ -61,7 +66,21 @@ public class Drive extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    //read values
+    if (false) {
+      final double lDist = target.getLeftDistance();
+      final double rDist = target.getRightDistance();
+
+      m_subsystem.tankDrive(((1 - 1.0 / (1 + Math.abs(lDist) / 2)) * 0.5 + 0.3) * Math.signum(lDist),
+          ((1 - 1.0 / (1 + Math.abs(rDist) / 2)) * 0.7 + 0.3) * Math.signum(rDist));
+
+      log.setString("" + target.getLeftDistance());
+      log2.setString("" + m_subsystem.encoders.right.getDistance());
+      log3.setBoolean(target.isWithinRange(0.1) && target.hasReached());
+
+      return;
+    }
+
+    // read values
     double x = lime.getX();
 
     double goalDistance = aimDistance.getDouble(60);
@@ -95,7 +114,8 @@ public class Drive extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return target.isWithinRange(0.1) && target.hasLeftReached();
+    // return false;
     // return timer.get() > 3;
   }
 }

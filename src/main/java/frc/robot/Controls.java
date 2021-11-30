@@ -37,24 +37,28 @@ public class Controls {
   }
 
   public double getXPow(boolean leftJoystick, int pow) {
-    final int sign = pow % 2 == 1 ? 1 : (int) Math.signum(pow);
+    final double amount = controller.getX(leftJoystick ? Hand.kLeft : Hand.kRight);
+    final int sign = pow % 2 == 1 ? 1 : (int) Math.signum(amount);
 
-    return Math.pow(controller.getX(leftJoystick ? Hand.kLeft : Hand.kRight), pow) * sign;
+    return Math.pow(amount, pow) * sign;
   }
 
   public double getYPow(boolean leftJoystick, int pow) {
-    final int sign = pow % 2 == 1 ? 1 : (int) Math.signum(pow);
+    final double amount = controller.getY(leftJoystick ? Hand.kLeft : Hand.kRight);
+    final int sign = pow % 2 == 1 ? 1 : (int) Math.signum(amount);
 
-    return Math.pow(controller.getY(leftJoystick ? Hand.kLeft : Hand.kRight), pow) * sign;
+    return Math.pow(amount, pow) * sign;
   }
 
   public class Tank {
     public double getLeft() {
-      return getYPow(true, driving.power) * (joystickPressed(true) ? speeds.fast.move : speeds.normal.move);
+      return getYPow(true, driving.power) * (joystickPressed(true) ? speeds.fast.move : speeds.normal.move)
+          * driving.direction;
     }
 
     public double getRight() {
-      return getYPow(false, driving.power) * (joystickPressed(false) ? speeds.fast.move : speeds.normal.move);
+      return getYPow(false, driving.power) * (joystickPressed(false) ? speeds.fast.move : speeds.normal.move)
+          * driving.direction;
     }
 
     private Tank() {
@@ -63,11 +67,12 @@ public class Controls {
 
   public class Arcade {
     public double getMove() {
-      return getYPow(true, driving.power) * (joystickPressed(true) ? speeds.fast.move : speeds.normal.move);
+      return getYPow(true, driving.power) * (joystickPressed(true) ? speeds.fast.move : speeds.normal.move)
+          * driving.direction;
     }
 
     public double getTurn() {
-      return getXPow(false, driving.power) * (joystickPressed(false) ? speeds.fast.move : speeds.normal.move);
+      return getXPow(false, driving.power) * (joystickPressed(false) ? speeds.fast.turn : speeds.normal.turn);
     }
 
     private Arcade() {
